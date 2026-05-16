@@ -3,7 +3,20 @@ import { ArrowRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 
-export function Hero() {
+interface HeroProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export function Hero({ title, subtitle }: HeroProps = {}) {
+  // Split title on last space → first part regular, last word gradient
+  const fullTitle = title ?? "Tu oficina, a tu hora.";
+  const lastSpace = fullTitle.lastIndexOf(" ");
+  const titleHead = lastSpace > 0 ? fullTitle.slice(0, lastSpace) : "";
+  const titleTail = lastSpace > 0 ? fullTitle.slice(lastSpace + 1) : fullTitle;
+  const sub =
+    subtitle ??
+    "Arrienda una oficina profesional por bloques AM o PM. Sin contratos largos, sin sobrecosto. Reserva en línea en menos de un minuto.";
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -20,16 +33,18 @@ export function Hero() {
           </span>
 
           <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            Tu oficina,<br />
+            {titleHead ? (
+              <>
+                {titleHead}
+                <br />
+              </>
+            ) : null}
             <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--gold)] bg-clip-text text-transparent">
-              a tu hora.
+              {titleTail}
             </span>
           </h1>
 
-          <p className="max-w-xl text-base text-foreground-secondary sm:text-lg">
-            Arrienda una oficina profesional por bloques AM o PM. Sin contratos largos, sin sobrecosto.
-            Reserva en línea en menos de un minuto.
-          </p>
+          <p className="max-w-xl text-base text-foreground-secondary sm:text-lg">{sub}</p>
 
           <div className="flex flex-wrap gap-3">
             <Button size="lg" asChild>

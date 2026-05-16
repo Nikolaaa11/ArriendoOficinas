@@ -103,10 +103,17 @@ Copiar `.env.example` a `.env.local` y completar. El mínimo para correr el siti
 ## 🧪 Tests
 
 ```powershell
+# Unit tests (Vitest)
 npm run test          # watch
-npm run test:run      # una vez
+npm run test:run      # una vez (13 tests pasan)
 npm run test:coverage # con coverage
+
+# E2E (Playwright)
+npm run test:e2e:install   # primera vez: descarga Chromium
+npm run test:e2e
 ```
+
+Unit tests cubren: validación de bookings, availability service (domingos, fechas bloqueadas, FULL), rate limiter. Playwright corre smoke sobre home, /disponibilidad, /login, /dashboard (redirige sin sesión) y login admin completo.
 
 ---
 
@@ -151,8 +158,8 @@ Regla de oro: **`modules/` nunca importa de `infrastructure/`**. El dominio defi
 | 1 | Fundación (scaffold, schema, auth, layouts, theme) | ✅ |
 | 2 | Landing + Disponibilidad + Contacto | ✅ |
 | 3 | Reservas (stepper, portal, mis reservas, detalle) | ✅ |
-| 4 | Admin (bookings + tenants tables, dashboard charts, admin calendar, PricingEditor, BlockedDatesManager, PhotoManager) | ✅ |
-| 5 | Pagos (Mercado Pago adapter + webhook), email notifications, reminders cron, reportes + CSV export, vercel.json | ✅ (excepto E2E con Playwright) |
+| 4 | Admin (bookings + tenants tables, tenant detail, dashboard charts, admin calendar, PricingEditor, BlockedDatesManager, PhotoManager, SiteConfigEditor + landing dinámica) | ✅ |
+| 5 | Pagos (Mercado Pago SDK activo + webhook + botón pagar), email notifications, reminders cron, reportes + CSV export, vercel.json, rate limiting, profile editor, cancel booking, Playwright E2E smoke | ✅ |
 
 ### Sprint 5 — notas operativas
 

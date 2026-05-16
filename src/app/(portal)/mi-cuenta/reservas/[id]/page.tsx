@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PayButton } from "@/components/booking/PayButton";
+import { CancelBookingButton } from "@/components/booking/CancelBookingButton";
 import { getBookingById } from "@/modules/booking/booking.service";
 import { getSession } from "@/infrastructure/auth/auth.utils";
 import { BOOKING_STATUS_LABEL, PAYMENT_STATUS_LABEL } from "@/lib/constants";
@@ -103,6 +104,12 @@ export default async function BookingDetailPage({
                 Paga ahora para asegurar el bloque.
               </p>
               <PayButton bookingId={booking.id} amount={booking.totalPrice} />
+            </div>
+          ) : null}
+
+          {booking.status === "PENDING" || booking.status === "CONFIRMED" ? (
+            <div className="mt-6 pt-6 border-t border-[var(--border)]">
+              <CancelBookingButton bookingId={booking.id} />
             </div>
           ) : null}
         </Card>

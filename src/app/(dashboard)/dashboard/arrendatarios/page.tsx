@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Card } from "@/components/ui/card";
-import { Users, MessageCircle } from "lucide-react";
+import { Users, MessageCircle, ChevronRight } from "lucide-react";
 import { prisma } from "@/infrastructure/database/prisma-client";
 import { formatShortDate } from "@/lib/dates";
 
@@ -62,16 +63,24 @@ export default async function ArrendatariosPage() {
                       {t.bookings[0]?.date ? formatShortDate(t.bookings[0].date) : "—"}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {t.phone ? (
-                        <a
-                          href={`https://wa.me/${t.phone.replace(/[^0-9]/g, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      <div className="inline-flex items-center gap-2">
+                        {t.phone ? (
+                          <a
+                            href={`https://wa.me/${t.phone.replace(/[^0-9]/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-1 text-xs hover:bg-background-surface"
+                          >
+                            <MessageCircle className="size-3.5" /> WhatsApp
+                          </a>
+                        ) : null}
+                        <Link
+                          href={`/dashboard/arrendatarios/${t.id}`}
                           className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-1 text-xs hover:bg-background-surface"
                         >
-                          <MessageCircle className="size-3.5" /> WhatsApp
-                        </a>
-                      ) : null}
+                          Ver <ChevronRight className="size-3.5" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

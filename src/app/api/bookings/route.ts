@@ -5,6 +5,7 @@ import { createBooking, getBookingById, getMyBookings } from "@/modules/booking/
 import { notifyBookingCreated } from "@/modules/notification/notification.service";
 import { formatDateLong } from "@/lib/dates";
 import { formatCurrency } from "@/lib/utils";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,6 +17,17 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { success: false, error: { code: "UNAUTHORIZED", message: "Debes iniciar sesión" } },
       { status: 401 },
+    );
+  }
+  const ip = getClientIp(req);
+  const rl = rateLimit(`booking:${userId}:${ip}`, { windowMs: 60_000, max: 10 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: { code: "RATE_LIMIT", message: "Demasiadas reservas en poco tiempo, intenta en un minuto." },
+      },
+      { status: 429, headers: { "Retry-After": String(Math.ceil(rl.resetMs / 1000)) } },
     );
   }
 

@@ -5,7 +5,9 @@ import { Card } from "@/components/ui/card";
 import { PricingEditor } from "@/components/dashboard/PricingEditor";
 import { BlockedDatesManager } from "@/components/dashboard/BlockedDatesManager";
 import { PhotoManager } from "@/components/dashboard/PhotoManager";
+import { SiteConfigEditor } from "@/components/dashboard/SiteConfigEditor";
 import { prisma } from "@/infrastructure/database/prisma-client";
+import { getLandingTexts } from "@/modules/site-config/site-config.service";
 
 export const metadata = { title: "Configuración" };
 export const dynamic = "force-dynamic";
@@ -25,7 +27,7 @@ export default async function ConfiguracionPage() {
     );
   }
 
-  const [blocks, blocked, photos] = await Promise.all([
+  const [blocks, blocked, photos, landingTexts] = await Promise.all([
     prisma.block.findMany({
       where: { officeId: office.id, isActive: true },
       include: { pricing: { where: { validTo: null } } },
@@ -39,6 +41,7 @@ export default async function ConfiguracionPage() {
       where: { officeId: office.id },
       orderBy: { order: "asc" },
     }),
+    getLandingTexts(),
   ]);
 
   return (
@@ -87,6 +90,14 @@ export default async function ConfiguracionPage() {
             Las fotos aparecen en la landing y en /galeria, ordenadas como las dejes aquí.
           </p>
           <PhotoManager officeId={office.id} photos={photos} />
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="font-display text-xl font-semibold">Textos del landing</h2>
+          <p className="text-sm text-foreground-secondary">
+            Edita el título del hero, el subtítulo, y los textos de contacto. El landing usa ISR (1 hora) — refresca para ver el cambio.
+          </p>
+          <SiteConfigEditor initial={landingTexts} />
         </section>
 
         <section className="space-y-3">

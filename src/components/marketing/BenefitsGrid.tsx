@@ -24,13 +24,13 @@ const benefits = [
   },
 ];
 
-export function BenefitsGrid() {
+export function BenefitsGrid({ title }: { title?: string } = {}) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <div className="mb-12 max-w-2xl">
         <p className="text-xs uppercase tracking-wider text-[var(--gold)]">Por qué BLOQUE</p>
         <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          Una oficina, sin las amarras de un arriendo tradicional.
+          {title ?? "Una oficina, sin las amarras de un arriendo tradicional."}
         </h2>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

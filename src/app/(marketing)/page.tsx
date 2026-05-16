@@ -6,6 +6,7 @@ import { MapEmbed } from "@/components/marketing/MapEmbed";
 import { ContactForm } from "@/components/marketing/ContactForm";
 import { PhotoGallery } from "@/components/marketing/PhotoGallery";
 import { prisma } from "@/infrastructure/database/prisma-client";
+import { getLandingTexts } from "@/modules/site-config/site-config.service";
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -22,12 +23,12 @@ async function getOfficePhotos() {
 }
 
 export default async function LandingPage() {
-  const photos = await getOfficePhotos();
+  const [photos, texts] = await Promise.all([getOfficePhotos(), getLandingTexts()]);
 
   return (
     <>
-      <Hero />
-      <BenefitsGrid />
+      <Hero title={texts.heroTitle} subtitle={texts.heroSubtitle} />
+      <BenefitsGrid title={texts.benefitsTitle} />
       <AmenitiesList />
 
       <section id="galeria" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
@@ -48,11 +49,9 @@ export default async function LandingPage() {
           <div>
             <p className="text-xs uppercase tracking-wider text-[var(--gold)]">Contacto</p>
             <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              ¿Tienes una duda? Conversemos.
+              {texts.contactTitle}
             </h2>
-            <p className="mt-3 max-w-md text-foreground-secondary">
-              Cuéntanos qué necesitas y te respondemos en menos de 24 horas. También puedes escribirnos por WhatsApp para algo más rápido.
-            </p>
+            <p className="mt-3 max-w-md text-foreground-secondary">{texts.contactDescription}</p>
           </div>
           <div>
             <ContactForm />
