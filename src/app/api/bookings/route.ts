@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/infrastructure/auth/auth";
 import { createBookingSchema } from "@/modules/booking/booking.validation";
-import { createBooking, getMyBookings } from "@/modules/booking/booking.service";
+import { createBooking, getBookingById, getMyBookings } from "@/modules/booking/booking.service";
+import { notifyBookingCreated } from "@/modules/notification/notification.service";
+import { formatDateLong } from "@/lib/dates";
+import { formatCurrency } from "@/lib/utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,6 +49,27 @@ export async function POST(req: Request) {
   if (!res.ok) {
     return NextResponse.json({ success: false, error: res.error }, { status: 409 });
   }
+
+  // Fire-and-forget notification
+  try {
+    const full = await getBookingById(res.value.id);
+    if (full) {
+      void notifyBookingCreated({
+        code: full.code,
+        userName: full.user.name,
+        userEmail: full.user.email,
+        date: formatDateLong(full.date),
+        blockLabel: full.block.label,
+        blockTime: `${full.block.startTime}–${full.block.endTime}`,
+        officeName: full.office.name,
+        totalPrice: full.totalPrice ? formatCurrency(full.totalPrice) : undefined,
+        notes: full.notes ?? undefined,
+      });
+    }
+  } catch {
+    /* notifications are best-effort */
+  }
+
   return NextResponse.json({ success: true, data: res.value });
 }
 

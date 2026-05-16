@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { PayButton } from "@/components/booking/PayButton";
 import { getBookingById } from "@/modules/booking/booking.service";
 import { getSession } from "@/infrastructure/auth/auth.utils";
 import { BOOKING_STATUS_LABEL, PAYMENT_STATUS_LABEL } from "@/lib/constants";
@@ -92,6 +93,17 @@ export default async function BookingDetailPage({
               <h4 className="font-display text-sm font-semibold mt-6 mb-2">Tus notas</h4>
               <p className="text-sm">{booking.notes}</p>
             </>
+          ) : null}
+
+          {booking.paymentStatus !== "PAID" &&
+          booking.status !== "CANCELLED" &&
+          booking.totalPrice ? (
+            <div className="mt-6 pt-6 border-t border-[var(--border)]">
+              <p className="text-sm text-foreground-secondary mb-3">
+                Paga ahora para asegurar el bloque.
+              </p>
+              <PayButton bookingId={booking.id} amount={booking.totalPrice} />
+            </div>
           ) : null}
         </Card>
       </div>

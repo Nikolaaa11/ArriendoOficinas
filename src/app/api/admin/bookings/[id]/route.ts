@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/infrastructure/auth/auth";
 import { prisma } from "@/infrastructure/database/prisma-client";
+import { notifyBookingConfirmed } from "@/modules/notification/notification.service";
+import { formatDateLong } from "@/lib/dates";
+import { formatCurrency } from "@/lib/utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,6 +49,24 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (parsed.data.status === "CANCELLED") data.cancelledAt = new Date();
   if (parsed.data.paymentStatus === "PAID") data.paidAt = new Date();
 
-  const updated = await prisma.booking.update({ where: { id }, data });
+  const updated = await prisma.booking.update({
+    where: { id },
+    data,
+    include: { user: true, block: true, office: true },
+  });
+
+  if (parsed.data.status === "CONFIRMED") {
+    void notifyBookingConfirmed({
+      code: updated.code,
+      userName: updated.user.name,
+      userEmail: updated.user.email,
+      date: formatDateLong(updated.date),
+      blockLabel: updated.block.label,
+      blockTime: `${updated.block.startTime}–${updated.block.endTime}`,
+      officeName: updated.office.name,
+      totalPrice: updated.totalPrice ? formatCurrency(updated.totalPrice) : undefined,
+    });
+  }
+
   return NextResponse.json({ success: true, data: updated });
 }

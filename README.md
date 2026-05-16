@@ -151,8 +151,17 @@ Regla de oro: **`modules/` nunca importa de `infrastructure/`**. El dominio defi
 | 1 | Fundación (scaffold, schema, auth, layouts, theme) | ✅ |
 | 2 | Landing + Disponibilidad + Contacto | ✅ |
 | 3 | Reservas (stepper, portal, mis reservas, detalle) | ✅ |
-| 4 | Admin (bookings table, arrendatarios, charts, config editors) | 🟡 Parcial (table + tenants done; calendar / pricing editor / photo manager pending) |
-| 5 | Pagos (Mercado Pago), reminders, reportes, E2E, deploy | ⏳ |
+| 4 | Admin (bookings + tenants tables, dashboard charts, admin calendar, PricingEditor, BlockedDatesManager, PhotoManager) | ✅ |
+| 5 | Pagos (Mercado Pago adapter + webhook), email notifications, reminders cron, reportes + CSV export, vercel.json | ✅ (excepto E2E con Playwright) |
+
+### Sprint 5 — notas operativas
+
+- **Mercado Pago:** el adapter en `src/modules/payment/mercadopago.adapter.ts` está **listo para enchufar**. Para activarlo: `npm install mercadopago`, setear `MERCADOPAGO_ACCESS_TOKEN`, y descomentar los bloques marcados. El botón **Pagar** en `/mi-cuenta/reservas/[id]` ya consume `POST /api/payments/preference` y redirige al `initPoint`.
+- **Webhook:** `POST /api/webhooks/payment` actualiza `paymentStatus` cuando MP notifica. Setear la URL en MP Dashboard.
+- **Cron de recordatorios:** `vercel.json` declara un cron diario a las 10:00 que llama `GET /api/cron/reminders`. Setear `CRON_SECRET` en Vercel para autenticarlo (Vercel envía `Authorization: Bearer $CRON_SECRET`).
+- **Emails:** sin `RESEND_API_KEY`, los emails se loguean a consola en lugar de enviarse — útil para dev.
+- **CSV:** `Reportes → Exportar CSV` baja todas las reservas con BOM UTF-8 (abre bien en Excel).
+- **Tests:** 11/11 pasan. E2E con Playwright queda pendiente.
 
 ---
 

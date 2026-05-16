@@ -1,4 +1,55 @@
 import { sendEmail } from "./email.adapter";
+import {
+  bookingCreatedToAdmin,
+  bookingCreatedToTenant,
+  bookingConfirmedToTenant,
+  bookingReminder,
+} from "./templates";
+
+interface BookingNotificationInput {
+  code: string;
+  userName: string;
+  userEmail: string;
+  date: string;
+  blockLabel: string;
+  blockTime: string;
+  officeName: string;
+  totalPrice?: string;
+  notes?: string;
+}
+
+const ADMIN_EMAIL = process.env.EMAIL_FROM ?? "admin@bloque.cl";
+
+export async function notifyBookingCreated(input: BookingNotificationInput) {
+  await Promise.allSettled([
+    sendEmail({
+      to: ADMIN_EMAIL,
+      subject: `Nueva reserva ${input.code} — ${input.userName}`,
+      html: bookingCreatedToAdmin(input),
+    }),
+    sendEmail({
+      to: input.userEmail,
+      subject: `Recibimos tu reserva ${input.code}`,
+      html: bookingCreatedToTenant(input),
+    }),
+  ]);
+}
+
+export async function notifyBookingConfirmed(input: BookingNotificationInput) {
+  await sendEmail({
+    to: input.userEmail,
+    subject: `Reserva ${input.code} confirmada ✓`,
+    html: bookingConfirmedToTenant(input),
+  });
+}
+
+export async function notifyBookingReminder(input: BookingNotificationInput) {
+  await sendEmail({
+    to: input.userEmail,
+    subject: `Recordatorio: tu reserva ${input.code} es mañana`,
+    html: bookingReminder(input),
+  });
+}
 
 export async function notifyContact(input: {
   name: string;
