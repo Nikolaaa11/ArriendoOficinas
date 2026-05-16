@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   CalendarDays,
+  CalendarPlus,
   ClipboardList,
   Home,
   LayoutDashboard,
@@ -34,6 +35,7 @@ export const dashboardNav: NavItem[] = [
 
 export const portalNav: NavItem[] = [
   { label: "Mi cuenta", href: "/mi-cuenta", icon: Home },
+  { label: "Reservar", href: "/reservar", icon: CalendarPlus },
   { label: "Mis reservas", href: "/mi-cuenta/mis-reservas", icon: ClipboardList },
   { label: "Perfil", href: "/mi-cuenta/perfil", icon: User },
 ];
