@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Light mode — variant "Daylight Ember" */
+  --background: #FAFAF7;
+  --background-secondary: #F0EDEA;
+  --background-elevated: #FFFFFF;
+  --background-surface: #F5F2EE;
+
+  --foreground: #1A1A1F;
+  --foreground-secondary: #6B6860;
+  --foreground-tertiary: #9B978F;
+
+  --accent: #E8734A;
+  --accent-hover: #F2895F;
+  --accent-foreground: #FFFFFF;
+  --accent-muted: rgba(232, 115, 74, 0.10);
+
+  --gold: #C4A265;
+  --gold-muted: rgba(196, 162, 101, 0.10);
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  --border: #E5E2DC;
+  --border-hover: #D5D2CC;
+
+  --ring: var(--accent);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --color-card: var(--background-elevated);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--background-elevated);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-foreground);
+  --color-secondary: var(--background-secondary);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--background-surface);
+  --color-muted-foreground: var(--foreground-secondary);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #ffffff;
+  --color-input: var(--background-surface);
+}
+
+.dark {
+  /* Midnight Ember */
+  --background: #0C0C0F;
+  --background-secondary: #161619;
+  --background-elevated: #1E1E23;
+  --background-surface: #26262D;
+
+  --foreground: #F0EDE8;
+  --foreground-secondary: #9B978F;
+  --foreground-tertiary: #5C5A55;
+
+  --accent: #E8734A;
+  --accent-hover: #F2895F;
+  --accent-foreground: #FFFFFF;
+  --accent-muted: rgba(232, 115, 74, 0.10);
+
+  --gold: #C4A265;
+  --gold-muted: rgba(196, 162, 101, 0.10);
+
+  --success: #34D399;
+  --warning: #FBBF24;
+  --danger: #F87171;
+
+  --border: #2A2A31;
+  --border-hover: #3A3A43;
+
+  --ring: var(--accent);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-elevated: var(--background-elevated);
+  --color-background-surface: var(--background-surface);
+
+  --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-tertiary: var(--foreground-tertiary);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-muted: var(--accent-muted);
+
+  --color-gold: var(--gold);
+  --color-gold-muted: var(--gold-muted);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --font-display: var(--font-outfit), "Outfit", system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
+
+  --radius: 10px;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
