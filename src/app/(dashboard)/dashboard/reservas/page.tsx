@@ -1,17 +1,31 @@
 import { PageHeader } from "@/components/shared/PageHeader";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { CalendarOff } from "lucide-react";
+import { BookingsTable } from "@/components/dashboard/BookingsTable";
+import { prisma } from "@/infrastructure/database/prisma-client";
 
 export const metadata = { title: "Reservas" };
+export const dynamic = "force-dynamic";
 
-export default function ReservasPage() {
+export default async function ReservasPage() {
+  const bookings = await prisma.booking.findMany({
+    orderBy: { date: "desc" },
+    include: { user: true, block: true, office: true },
+    take: 200,
+  });
+
   return (
     <>
-      <PageHeader title="Reservas" description="Aprueba, cancela y administra todas las reservas." />
-      <EmptyState
-        icon={CalendarOff}
-        title="Tabla de reservas — Sprint 4"
-        description="Implementación detallada en Sprint 4: filtros por estado/fecha, acciones masivas, paginación server-side."
+      <PageHeader title="Reservas" description="Aprueba, cancela y marca como pagadas." />
+      <BookingsTable
+        initialBookings={bookings.map((b) => ({
+          id: b.id,
+          code: b.code,
+          date: b.date,
+          status: b.status,
+          paymentStatus: b.paymentStatus,
+          totalPrice: b.totalPrice,
+          user: { name: b.user.name, email: b.user.email },
+          block: { label: b.block.label, startTime: b.block.startTime, endTime: b.block.endTime },
+        }))}
       />
     </>
   );
