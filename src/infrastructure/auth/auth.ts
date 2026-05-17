@@ -7,26 +7,39 @@ import { prisma } from "@/infrastructure/database/prisma-client";
 export const { auth, handlers, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
-    ...authConfig.providers.filter((p) => {
-      const name = (p as { name?: string }).name;
-      return name !== "credentials";
-    }),
+    ...authConfig.providers,
     Credentials({
-      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email as string | undefined;
+        const email = (credentials?.email as string | undefined)?.toLowerCase().trim();
         const password = credentials?.password as string | undefined;
-        if (!email || !password) return null;
+        if (!email || !password) {
+          console.warn("[auth] missing email or password");
+          return null;
+        }
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.passwordHash || !user.isActive) return null;
+        if (!user) {
+          console.warn(`[auth] user not found: ${email}`);
+          return null;
+        }
+        if (!user.passwordHash) {
+          console.warn(`[auth] user has no passwordHash: ${email}`);
+          return null;
+        }
+        if (!user.isActive) {
+          console.warn(`[auth] user inactive: ${email}`);
+          return null;
+        }
 
         const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return null;
+        if (!ok) {
+          console.warn(`[auth] bad password for ${email}`);
+          return null;
+        }
 
         return {
           id: user.id,
