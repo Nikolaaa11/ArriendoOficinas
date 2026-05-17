@@ -2,9 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  CalendarDays,
+  CalendarPlus,
+  ClipboardList,
+  Home,
+  LayoutDashboard,
+  PieChart,
+  Settings,
+  User,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import type { NavItem } from "@/config/navigation";
+import type { NavIconName, NavItem } from "@/config/navigation";
+
+const ICONS: Record<NavIconName, LucideIcon> = {
+  Home,
+  LayoutDashboard,
+  ClipboardList,
+  CalendarDays,
+  CalendarPlus,
+  Users,
+  PieChart,
+  Settings,
+  User,
+};
 
 interface Props {
   items: NavItem[];
@@ -28,8 +52,10 @@ export function Sidebar({ items, title = "BLOQUE" }: Props) {
       <nav className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
           {items.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+            const Icon = item.icon ? ICONS[item.icon] : null;
+            const active =
+              pathname === item.href ||
+              (item.href !== "/" && pathname?.startsWith(item.href));
             return (
               <li key={item.href}>
                 <Link
